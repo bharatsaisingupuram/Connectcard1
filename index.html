@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ConnectCard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root{--bg:#f3f4f8;--card:#fff;--tx:#111827;--mu:#6b7280;--ac:#4f46e5;--bd:#e5e7eb;--ok:#059669;--er:#dc2626;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f1220;--card:#181c2e;--tx:#f1f5f9;--mu:#94a3b8;--bd:#2a3050;--ac:#818cf8}}
+:root[data-theme=dark]{--bg:#0f1220;--card:#181c2e;--tx:#f1f5f9;--mu:#94a3b8;--bd:#2a3050;--ac:#818cf8}
+*{box-sizing:border-box}html,body{margin:0}body{background:var(--bg);color:var(--tx);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+#app{display:flex;min-height:100vh}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--card);border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
+nav a{flex:1;text-align:center;padding:8px 2px;color:var(--mu);text-decoration:none;font-size:12px}nav a b{display:block;font-size:20px}nav a.on{color:var(--ac);font-weight:600}
+main{flex:1;max-width:720px;width:100%;margin:0 auto;padding:16px 16px 90px}
+@media(min-width:800px){nav{top:0;bottom:auto;right:auto;width:200px;height:100vh;flex-direction:column;border-top:0;border-right:1px solid var(--bd);padding:20px 8px}nav a{text-align:left;padding:12px;font-size:15px;border-radius:10px}nav a b{display:inline;margin-right:8px}nav a.on{background:var(--bg)}main{margin-left:200px;padding-bottom:30px}#app.out main{margin:0 auto}}
+h1{font-size:24px;margin:8px 0 14px}h2{font-size:17px;margin:18px 0 8px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px;margin-bottom:10px}
+.row{display:flex;align-items:center;gap:12px;cursor:pointer}.row .t{flex:1;min-width:0}.row .t div:first-child{font-weight:600}.mu{color:var(--mu);font-size:14px}
+.av{width:46px;height:46px;border-radius:50%;flex:none;object-fit:cover;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}.av.big{width:96px;height:96px;font-size:36px;margin:0 auto}
+button,.btn{background:var(--ac);color:#fff;border:0;border-radius:10px;padding:10px 16px;font:inherit;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block}
+button.s,.btn.s{background:var(--bg);color:var(--tx);border:1px solid var(--bd)}button.d{background:var(--er)}button.sm{padding:6px 10px;font-size:14px}
+input,textarea,select{width:100%;padding:10px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx);font:inherit;margin:4px 0 10px}
+label{font-size:14px;font-weight:600}.tg{display:flex;gap:8px;align-items:center}.tg input[type=checkbox]{width:auto;margin:0}.tg input[type=text],.tg input:not([type]){flex:1}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.ctr{text-align:center}.badge{font-size:12px;background:var(--bg);border:1px solid var(--bd);border-radius:20px;padding:2px 8px;color:var(--mu)}
+.msg{padding:10px;border-radius:10px;margin:8px 0;background:var(--bg)}.msg.er{color:var(--er)}.msg.ok{color:var(--ok)}
+#qr{display:inline-block;background:#fff;padding:12px;border-radius:12px}.link{word-break:break-all;font-size:13px}
+:root{--gr:linear-gradient(135deg,#4f46e5,#7c3aed)}
+body{background:radial-gradient(900px 400px at 50% -120px,rgba(99,102,241,.2),transparent),var(--bg);background-attachment:fixed}
+main>*{animation:up .28s ease both}@keyframes up{from{opacity:0;transform:translateY(8px)}}
+h1{letter-spacing:-.02em}
+.card{box-shadow:0 1px 2px rgba(16,24,40,.05),0 8px 20px -12px rgba(16,24,40,.18);transition:transform .15s,box-shadow .15s}
+.card.row:hover{transform:translateY(-2px);box-shadow:0 12px 26px -12px rgba(79,70,229,.45)}
+button:not(.s),.btn:not(.s){background:var(--gr);box-shadow:0 6px 14px -6px rgba(79,70,229,.6);transition:transform .1s,filter .15s}
+button:not(.s):hover,.btn:not(.s):hover{filter:brightness(1.08)}
+button.d{background:var(--er)!important;box-shadow:none}
+button:active,.btn:active{transform:scale(.97)}
+input:focus,textarea:focus,select:focus{outline:2px solid var(--ac);border-color:transparent}
+.av{box-shadow:0 0 0 2px var(--card),0 0 0 3px var(--bd)}.av.big{box-shadow:0 0 0 4px var(--card),0 0 0 6px var(--ac)}
+nav{backdrop-filter:blur(10px);background:color-mix(in srgb,var(--card) 88%,transparent)}
+nav a{transition:color .15s,background .15s}nav a.on b{transform:scale(1.15)}
+.badge{background:color-mix(in srgb,var(--ac) 12%,transparent);color:var(--ac);border-color:transparent;font-weight:600;text-transform:capitalize}
+.hero{padding:10vh 0 4vh}.hero .logo{width:88px;height:88px;margin:0 auto 14px;border-radius:26px;background:var(--gr);display:flex;align-items:center;justify-content:center;font-size:44px;box-shadow:0 18px 36px -14px rgba(79,70,229,.7)}.hero h1{font-size:34px;margin:4px 0}
+.card.ctr h1{margin-top:10px}
+</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.110.1/dist/umd/supabase.min.js"></script>
+</head><body>
+<div id="app"></div>
+<script>
+/* ===== CONFIG: paste your Supabase values (Project Settings > API). The anon key is public by design. NEVER paste the service_role key. ===== */
+const CFG={url:'https://pwtidpxhdcvbxpjgnulb.supabase.co',key:'sb_publishable_BkeBnUGjaT111LhxmZfyPg_4Q5XS62F'};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const KEYS=['phone','whatsapp','instagram','linkedin','website'],LBL={phone:'Phone',whatsapp:'WhatsApp',instagram:'Instagram',linkedin:'LinkedIn',website:'Website'};
+const sb=(CFG.url.startsWith('https://')&&window.supabase)?supabase.createClient(CFG.url,CFG.key,{auth:{flowType:'pkce'}}):null;
+let lastEm='',U=null,P=null,C={},flash='',newLink=null,photoBlob=null;
+const col=n=>`hsl(${[...n].reduce((a,c)=>a+c.charCodeAt(0),0)*37%360} 55% 45%)`;
+const safeUrl=u=>{try{const x=new URL(u);return x.protocol==='https:'?x.href:null}catch{return null}};
+const digits=s=>String(s).replace(/\D/g,'');
+function href(k,v){if(k==='phone'||k==='whatsapp'){const d=digits(v);return /^\d{7,15}$/.test(d)?(k==='phone'?'tel:+':'https://wa.me/')+d:null}return safeUrl(v)}
+const av=(p,big)=>p.url?`<img class="av ${big?'big':''}" src="${esc(p.url)}" alt="">`:`<div class="av ${big?'big':''}" style="background:${col(p.display_name||'?')}">${esc((p.display_name||'?')[0].toUpperCase())}</div>`;
+const run=()=>route().catch(e=>{console.error(e);show(`<div class="card">Something went wrong: ${esc(e.message||'')}. <a href="#/">Home</a></div>`)});
+const go=h=>{if(location.hash===h)run();else location.hash=h};
+const fl=()=>{const f=flash;flash='';return f?`<div class="msg ${f[0]=='!'?'er':'ok'}">${esc(f.replace(/^[!+]/,''))}</div>`:''};
+const page=(inner,tab)=>{const o=!U;return`<div id="app" class="${o?'out':''}">${o?'':`<nav>${[['#/','⌂','Home'],['#/communities','👥','My Communities'],['#/profile','🙂','My Profile'],['#/settings','⚙','Settings']].map(([h,i,l])=>`<a href="${h}" class="${tab===h?'on':''}"><b>${i}</b>${l}</a>`).join('')}</nav>`}<main>${fl()}${inner}</main></div>`};
+const show=(h,tab)=>{document.getElementById('app').outerHTML=page(h,tab);scroll(0,0)};
+const sign=async rows=>{const ps=[...new Set(rows.map(r=>r&&r.photo_path).filter(Boolean))];if(!ps.length)return rows;const{data}=await sb.storage.from('avatars').createSignedUrls(ps,3600);const m={};(data||[]).forEach(d=>{if(d.signedUrl)m[d.path]=d.signedUrl});rows.forEach(r=>{if(r)r.url=m[r.photo_path]});return rows};
+async function loadMe(){const{data}=await sb.from('profiles').select('*').eq('id',U.id).maybeSingle();P=data;C={};if(P){await sign([P]);const{data:cs}=await sb.from('contact_methods').select('type,value,is_enabled').eq('user_id',U.id);(cs||[]).forEach(c=>C[c.type]=c)}}
+
+const setup=()=>show(`<div class="card"><h1>Connect Supabase first</h1><p>This app needs your own free Supabase project. Nothing is stored until it is connected.</p><label>Your Supabase project URL</label><input id="su" placeholder="https://abcdxyz.supabase.co"><button data-act="saveurl">Connect</button><p class="mu">Saved only in this browser. To make it work for everyone who opens your site, put the URL in the CFG line of index.html.</p><ol><li>Run <b>supabase/schema.sql</b> in the Supabase SQL Editor.</li><li>Enable Google sign-in in Supabase (Authentication &gt; Providers).</li><li>Paste your project URL and anon key into the <b>CFG</b> lines at the top of the script in <b>index.html</b>.</li><li>Add this site's address under Authentication &gt; URL Configuration &gt; Redirect URLs.</li></ol></div>`);
+const welcome=inv=>show(`<div class="ctr hero"><div class="logo">🪪</div><h1>ConnectCard</h1><p class="mu">${inv?'You have been invited to join a community.':'One profile. Every community. Share only the contact methods you choose.'}</p><p class="mu">No chat, no feeds, no public search.</p><div style="max-width:320px;margin:0 auto;text-align:left"><label>Email</label><input id="em" type="email" autocomplete="email" value="${esc(lastEm)}"><label>Password (6+ characters)</label><input id="pw" type="password" autocomplete="current-password"><div class="bar" style="justify-content:center"><button data-act="emlogin">Sign in</button><button class="s" data-act="emsignup">Create account</button></div></div></div>`);
+
+async function route(){
+ if(!sb)return setup();
+ const p=(location.hash.replace(/^#/,'')||'/').split('/').filter(Boolean),t=p[0]||'';
+ if(t==='join'&&p[1])localStorage.setItem('pj',p[1]);
+ if(!U)return welcome(t==='join');
+ if((!P||!P.profile_complete)&&t!=='profile')return go('#/profile');
+ if(t==='')return home();if(t==='communities')return comms();if(t==='profile')return profileView();if(t==='settings')return settings();
+ if(t==='new')return newComm();if(t==='c')return commView(p[1]);if(t==='m')return memberView(p[1],p[2]);if(t==='manage')return manage(p[1]);if(t==='join')return joinView();
+ go('#/');
+}
+async function myComms(){const{data,error}=await sb.from('members').select('role,status,communities(id,name,description)').eq('user_id',U.id);if(error)throw error;return data||[]}
+const commCard=r=>`<div class="card row" data-go="#/c/${r.communities.id}"><div class="av" style="background:${col(r.communities.name)}">${esc(r.communities.name[0])}</div><div class="t"><div>${esc(r.communities.name)}</div><div class="mu"><span class="badge">${r.role}</span></div></div>›</div>`;
+async function home(){const all=await myComms(),act=all.filter(r=>r.status==='active'&&r.communities),adm=act.filter(r=>r.role!=='member'),pend=all.filter(r=>r.status==='pending').length;
+ show(`<h1>Hi ${esc(P.display_name.split(' ')[0])} 👋</h1><div class="bar"><a class="btn" href="#/new">+ Create community</a><button class="s" data-act="joinlink">Join from invite link</button></div><h2>Communities you joined</h2>${act.map(commCard).join('')||'<div class="card mu">None yet. Create one or join with an invite link.</div>'}
+ ${adm.length?`<h2>You manage</h2>${adm.map(r=>`<div class="card row" data-go="#/manage/${r.communities.id}"><div class="t"><div>${esc(r.communities.name)}</div></div><span class="badge">Manage</span></div>`).join('')}`:''}${pend?`<div class="msg">${pend} join request(s) waiting for host approval.</div>`:''}<p class="mu">To scan a QR invitation, use your phone camera; it opens the invite link.</p>`,'#/')}
+async function comms(){const act=(await myComms()).filter(r=>r.status==='active'&&r.communities);show(`<h1>My Communities</h1><div class="bar"><a class="btn" href="#/new">+ Create</a><button class="s" data-act="joinlink">Join from invite</button></div>${act.map(commCard).join('')||'<div class="card mu">You have not joined any community.</div>'}`,'#/communities')}
+async function commView(id){const{data:c}=await sb.from('communities').select('*').eq('id',id).maybeSingle();
+ if(!c){flash='!Access denied: you are not an active member of this community.';return go('#/communities')}
+ const{data:ms}=await sb.from('members').select('user_id,role,profiles(id,display_name,role_title,photo_path)').eq('community_id',id).eq('status','active');
+ const me=(ms||[]).find(m=>m.user_id===U.id),list=(ms||[]).filter(m=>m.profiles).map(m=>({...m.profiles,user_id:m.user_id}));await sign(list);
+ list.sort((a,b)=>a.display_name.toLowerCase().localeCompare(b.display_name.toLowerCase()));
+ show(`<a href="#/communities" class="mu">‹ Back</a><h1>${esc(c.name)}</h1><p class="mu">${esc(c.description)}</p>${me&&me.role!=='member'?`<div class="bar"><a class="btn s" href="#/manage/${id}">Manage &amp; invite</a></div>`:`<div class="bar"><button class="s d" data-act="leave" data-id="${id}">Leave</button></div>`}<h2>Members A–Z (${list.length})</h2>${list.map(m=>`<div class="card row" data-go="#/m/${id}/${m.id}">${av(m)}<div class="t"><div>${esc(m.display_name)}</div><div class="mu">${esc(m.role_title)||'&nbsp;'}</div></div>›</div>`).join('')||'<div class="card mu">No members yet.</div>'}`,'#/communities')}
+async function memberView(cid,uid){const[{data:pr},{data:cs}]=await Promise.all([sb.from('profiles').select('*').eq('id',uid).maybeSingle(),sb.from('contact_methods').select('type,value,is_enabled').eq('user_id',uid)]);
+ if(!pr){flash='!Profile not available.';return go('#/c/'+cid)}await sign([pr]);
+ const btns=(cs||[]).filter(c=>c.is_enabled).map(c=>({k:c.type,h:href(c.type,c.value)})).filter(x=>x.h).map(x=>`<a class="btn s" target="_blank" rel="noopener noreferrer" href="${esc(x.h)}">${x.k==='phone'?'📞 Call':LBL[x.k]}</a>`).join('');
+ show(`<a href="#/c/${cid}" class="mu">‹ Back</a><div class="card ctr">${av(pr,1)}<h1 style="margin-bottom:0">${esc(pr.display_name)}</h1><div class="mu">${esc(pr.role_title)}</div><p>${esc(pr.bio)}</p><div class="bar" style="justify-content:center">${btns||'<span class="mu">No contact methods shared.</span>'}</div></div>${uid!==U.id?`<div class="bar"><button class="s sm" data-act="block" data-id="${uid}">Block</button><button class="s sm" data-act="report" data-id="${uid}" data-c="${cid}">Report</button></div>`:''}`,'#/communities')}
+function profileView(){const p=P||{display_name:'',bio:'',role_title:''};photoBlob=null;
+ show(`<h1>${P&&P.profile_complete?'My Profile':'Create your profile'}</h1><div class="card"><div class="ctr"><span id="pv">${av(p,1)}</span><p><label class="btn s sm">Choose photo<input type="file" accept="image/*" id="ph" hidden></label></p></div>
+ <label>Name *</label><input id="nm" maxlength="60" value="${esc(p.display_name)}"><label>Short bio</label><textarea id="bi" maxlength="200" rows="2">${esc(p.bio)}</textarea><label>Role / course / profession</label><input id="ti" maxlength="60" value="${esc(p.role_title)}">
+ <h2>Contact methods to share</h2><p class="mu">Private unless switched on. Your Google email is never shared.</p>
+ ${KEYS.map(k=>`<label>${LBL[k]}</label><div class="tg"><input id="c_${k}" placeholder="${k==='phone'||k==='whatsapp'?'Number with country code':'https://…'}" value="${esc((C[k]||{}).value||'')}"><input type="checkbox" id="e_${k}" ${(C[k]||{}).is_enabled?'checked':''} aria-label="Share ${LBL[k]}"></div>`).join('')}<button id="sv" data-act="saveprof">Save</button></div>`,'#/profile')}
+function newComm(){show(`<a href="#/communities" class="mu">‹ Back</a><h1>Create community</h1><div class="card"><label>Name *</label><input id="cn" maxlength="60"><label>Description</label><textarea id="cd" rows="2" maxlength="200"></textarea><div class="tg"><input type="checkbox" id="ca"><label>Require my approval to join</label></div><br><button data-act="mk">Create</button></div>`,'#/communities')}
+async function manage(id){const nl=newLink;newLink=null;
+ const[a,b,r,d]=await Promise.all([sb.from('communities').select('*').eq('id',id).maybeSingle(),sb.from('invitations').select('id,created_at,expires_at,max_uses,use_count,revoked_at').eq('community_id',id).order('created_at',{ascending:false}),sb.rpc('pending_requests',{cid:id}),sb.from('members').select('user_id,role,profiles(id,display_name,role_title,photo_path)').eq('community_id',id).eq('status','active')]);
+ const c=a.data,ms=d.data||[],me=ms.find(m=>m.user_id===U.id);if(!c||!me||me.role==='member'){flash='!Not authorized.';return go('#/communities')}
+ const mem=ms.filter(m=>m.profiles).map(m=>({...m.profiles,user_id:m.user_id,mrole:m.role}));await sign(mem);const own=me.role==='owner';
+ const st=i=>i.revoked_at?'revoked':i.expires_at&&new Date(i.expires_at)<new Date()?'expired':i.max_uses&&i.use_count>=i.max_uses?'used up':'active';
+ show(`<a href="#/c/${id}" class="mu">‹ ${esc(c.name)}</a><h1>Manage</h1><div class="card"><label>Name</label><input id="mn" value="${esc(c.name)}"><label>Description</label><input id="md" value="${esc(c.description)}"><div class="tg"><input type="checkbox" id="ma" ${c.approval_required?'checked':''}><label>Require approval</label></div><br><button data-act="upc" data-id="${id}">Save</button></div>
+ <h2>Invitations</h2>${nl?`<div class="card ctr"><b>New invite link</b> <span class="mu">(shown once)</span><div class="link">${esc(nl)}</div><div class="bar" style="justify-content:center"><button class="sm" data-act="copy" data-v="${esc(nl)}">Copy</button>${navigator.share?`<button class="sm s" data-act="share" data-v="${esc(nl)}">Share</button>`:''}</div><div id="qr" class="ctr"></div></div>`:''}
+ <div class="card"><div class="tg"><div style="flex:1"><label>Expires in (days, 0 = never)</label><input id="ie" type="number" min="0" value="7"></div><div style="flex:1"><label>Max uses (0 = unlimited)</label><input id="iu" type="number" min="0" value="0"></div></div><button data-act="inv" data-id="${id}">Create invite link + QR</button></div>
+ ${(b.data||[]).map(i=>`<div class="card row"><div class="t mu">${new Date(i.created_at).toLocaleDateString()} · used ${i.use_count}/${i.max_uses||'∞'} · ${st(i)}</div>${i.revoked_at?'':`<button class="sm d" data-act="rev" data-id="${id}" data-m="${i.id}">Revoke</button>`}</div>`).join('')}
+ ${(r.data||[]).length?`<h2>Join requests</h2>${r.data.map(m=>`<div class="card row"><div class="t"><div>${esc(m.display_name)}</div></div><button class="sm" data-act="appr" data-id="${id}" data-m="${m.user_id}">Approve</button><button class="sm s" data-act="rej" data-id="${id}" data-m="${m.user_id}">Reject</button></div>`).join('')}`:''}
+ <h2>Members</h2>${mem.map(m=>`<div class="card row">${av(m)}<div class="t"><div>${esc(m.display_name)}</div><div class="mu">${m.mrole}</div></div>${own&&m.mrole!=='owner'?`<button class="sm s" data-act="mod" data-id="${id}" data-m="${m.user_id}" data-v="${m.mrole==='member'?1:0}">${m.mrole==='member'?'Make mod':'Remove mod'}</button>`:''}${m.mrole==='member'||(own&&m.mrole==='moderator')?`<button class="sm s" data-act="rmm" data-id="${id}" data-m="${m.user_id}">Remove</button>`:''}</div>`).join('')}`,'#/communities');
+ if(nl&&window.QRCode)new QRCode(document.getElementById('qr'),{text:nl,width:180,height:180})}
+function joinView(){const t=localStorage.getItem('pj');show(`<div class="card ctr"><h1>Join this community?</h1><p class="mu">Members of the community will see your profile and only the contact methods you chose to share. If the host requires approval, they must accept you first.</p><button data-act="dojoin">Join Community</button></div>`)}
+function settings(){show(`<h1>Settings</h1><div class="card"><div class="bar"><button class="s" data-act="theme">Toggle dark mode</button><button class="s" data-act="out">Sign out</button></div><p class="mu"><button class="sm s" data-act="unblock">Unblock everyone</button></p></div><div class="card"><b>Privacy</b><p class="mu">Contact details are shared only with members of communities you join, only for methods you enabled. Not sold or used for ads. People may keep what they saw or screenshotted before access ended.</p></div><div class="card"><b>Delete my data</b><p class="mu">Deletes your profile, contact methods and memberships. Removing your sign-in account itself is not built yet.</p><button class="d" data-act="del">Delete my data</button></div>`,'#/settings')}
+
+async function doJoin(){const t=localStorage.getItem('pj');if(!t){flash='!No invitation found.';return go('#/')}
+ const{data,error}=await sb.rpc('redeem_invitation',{p_token:t});
+ if(error){const m=error.message||'';if(m.includes('profile_required'))return go('#/profile');localStorage.removeItem('pj');flash='!'+(m.includes('invalid_invitation')?'This invitation is invalid, expired, revoked or used up.':m);return go('#/')}
+ localStorage.removeItem('pj');flash=data==='pending'?'+Request sent. The host must approve it.':'+You joined!';go('#/communities')}
+const ck=r=>{if(r.error)throw r.error;return r.data};
+document.addEventListener('click',async e=>{const g=e.target.closest('[data-go]'),a=e.target.closest('[data-act]');if(g&&!a)return go(g.dataset.go);if(!a)return;
+ const d=a.dataset,A=d.act,v=id=>document.getElementById(id)?.value;
+ try{
+ if(A==='saveurl'){const u=v('su').trim().replace(/\/+$/,'');if(!/^https:\/\/[a-z0-9-]+\.supabase\.co$/.test(u)){flash='!Enter a URL like https://abcdxyz.supabase.co';return setup()}localStorage.setItem('cc_url',u);return location.reload()}
+ if(A==='emlogin'||A==='emsignup'){const email=v('em').trim(),password=v('pw');lastEm=email;if(!email||password.length<6){flash='!Enter your email and a password of 6+ characters.';return run()}
+  a.textContent='Please wait…';a.disabled=true;const r=await Promise.race([A==='emlogin'?sb.auth.signInWithPassword({email,password}):sb.auth.signUp({email,password}),new Promise((_,j)=>setTimeout(()=>j(new Error('Taking too long. Check your internet and try again.')),20000))]);if(r.error)throw r.error;
+  if(!r.data.session){flash='+Check your email and tap the confirmation link, then sign in.';return run()}
+  U=r.data.session.user;await loadMe();if(localStorage.getItem('pj')&&!location.hash.startsWith('#/join'))location.hash='#/join';return run()}
+ if(A==='signin'){return ck(await sb.auth.signInWithOAuth({provider:d.p||'github',options:{redirectTo:location.origin+location.pathname}}))}
+ if(A==='out'){await sb.auth.signOut();U=P=null;C={};return go('#/')}
+ if(A==='saveprof'){const n=v('nm').trim();if(!n){flash='!Name is required.';return profileView()}
+  const rows=[];for(const k of KEYS){const raw=v('c_'+k).trim();if(raw&&!href(k,raw)){flash='!'+LBL[k]+': enter a valid '+(k=='phone'||k=='whatsapp'?'number':'https:// link')+'.';return profileView()}rows.push([k,raw,document.getElementById('e_'+k).checked])}
+  a.textContent='Saving…';a.disabled=true;let path=P?.photo_path||null;
+  if(photoBlob){ck(await sb.storage.from('avatars').upload(U.id+'/avatar.jpg',photoBlob,{upsert:true,contentType:'image/jpeg'}).then(r=>({error:r.error})));path=U.id+'/avatar.jpg'}
+  ck(await sb.from('profiles').upsert({id:U.id,display_name:n,bio:v('bi').trim(),role_title:v('ti').trim(),photo_path:path,profile_complete:true,updated_at:new Date().toISOString()}));
+  for(const[k,raw,on]of rows){ck(raw?await sb.from('contact_methods').upsert({user_id:U.id,type:k,value:(k==='phone'||k==='whatsapp')?digits(raw):raw,is_enabled:on,updated_at:new Date().toISOString()}):await sb.from('contact_methods').delete().eq('user_id',U.id).eq('type',k))}
+  await loadMe();flash='+Saved.';return go(localStorage.getItem('pj')?'#/join':'#/')}
+ if(A==='mk'){const n=v('cn').trim();if(!n){flash='!Name required';return newComm()}const id=ck(await sb.rpc('create_community',{p_name:n,p_desc:v('cd').trim(),p_approval:document.getElementById('ca').checked}));flash='+Community created. Create an invite below.';return go('#/manage/'+id)}
+ if(A==='upc'){ck(await sb.from('communities').update({name:v('mn').trim(),description:v('md').trim(),approval_required:document.getElementById('ma').checked}).eq('id',d.id));flash='+Saved';return run()}
+ if(A==='inv'){const t=ck(await sb.rpc('create_invitation',{cid:d.id,p_days:+v('ie')||0,p_max:+v('iu')||0}));newLink=location.origin+location.pathname+'#/join/'+t;return run()}
+ if(A==='rev'){ck(await sb.rpc('revoke_invitation',{inv:d.m}));return run()}
+ if(A==='appr'||A==='rej'){ck(await sb.rpc('manage_request',{cid:d.id,uid:d.m,approve:A==='appr'}));return run()}
+ if(A==='rmm'){if(confirm('Remove this member?')){ck(await sb.rpc('remove_member',{cid:d.id,uid:d.m}));run()}return}
+ if(A==='mod'){ck(await sb.rpc('set_moderator',{cid:d.id,uid:d.m,make_mod:d.v==='1'}));return run()}
+ if(A==='copy'){try{await navigator.clipboard.writeText(d.v);a.textContent='Copied'}catch{a.textContent='Copy failed'}return}
+ if(A==='share'){try{await navigator.share({title:'Join my community on ConnectCard',url:d.v})}catch{}return}
+ if(A==='joinlink'){const u=prompt('Paste the invitation link:');if(!u)return;const m=u.match(/join\/([a-f0-9]+)/);if(m){localStorage.setItem('pj',m[1]);go('#/join')}else{flash='!Not a valid invitation link.';run()}return}
+ if(A==='dojoin')return doJoin();
+ if(A==='leave'){if(confirm('Leave this community?')){ck(await sb.from('members').delete().eq('community_id',d.id).eq('user_id',U.id));go('#/communities')}return}
+ if(A==='block'){ck(await sb.from('blocks').insert({blocker:U.id,blocked:d.id}));flash='+User blocked.';return go('#/communities')}
+ if(A==='report'){const r=prompt('Reason for report:');if(r){ck(await sb.from('reports').insert({reporter_id:U.id,reported_user_id:d.id,community_id:d.c,reason:r.slice(0,500)}));flash='+Report sent.';run()}return}
+ if(A==='unblock'){ck(await sb.from('blocks').delete().eq('blocker',U.id));flash='+Unblocked.';return run()}
+ if(A==='theme'){const r=document.documentElement;r.dataset.theme=(r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme:dark)').matches))?'light':'dark';return}
+ if(A==='del'){if(confirm('Delete your profile and memberships? This cannot be undone.')){ck(await sb.from('profiles').delete().eq('id',U.id));P=null;C={};flash='+Your data was deleted.';go('#/')}return}
+ }catch(err){flash='!'+(err.message||'Something went wrong.');run()}
+});
+document.addEventListener('change',e=>{if(e.target.id!=='ph'||!e.target.files[0])return;const im=new Image(),r=new FileReader();r.onload=()=>{im.onload=()=>{const cv=document.createElement('canvas');cv.width=cv.height=256;const s=Math.min(im.width,im.height);cv.getContext('2d').drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,0,0,256,256);cv.toBlob(b=>{photoBlob=b;document.getElementById('pv').innerHTML=`<img class="av big" src="${cv.toDataURL('image/jpeg',.8)}" alt="">`},'image/jpeg',.8)};im.src=r.result};r.readAsDataURL(e.target.files[0])});
+addEventListener('hashchange',run);
+addEventListener('unhandledrejection',e=>{flash='!'+((e.reason&&e.reason.message)||'Unexpected error');run()});addEventListener('error',e=>{flash='!'+(e.message||'Unexpected error');run()});
+(async()=>{if(!sb)return setup();const{data:{session}}=await sb.auth.getSession();U=session?.user||null;if(location.search)history.replaceState(null,'',location.pathname+location.hash);
+ sb.auth.onAuthStateChange((ev,s)=>{if(ev==='SIGNED_OUT'){U=null;P=null}});
+ if(U){await loadMe();if(localStorage.getItem('pj')&&!location.hash.startsWith('#/join'))location.hash='#/join'}run()})();
+</script></body></html>
